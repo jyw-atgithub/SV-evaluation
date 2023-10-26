@@ -1,0 +1,13 @@
+read_type	depth	med_L	r_range	accuracy	err_profile	prj_name
+ONT	10	15000	500-70000	90%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_10x_0.9
+ONT	20	15000	500-70001	90%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_20x_0.9
+ONT	30	15000	500-70002	90%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_30x_0.9
+ONT	40	15000	500-70003	90%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_40x_0.9
+ONT	50	15000	500-70004	90%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_50x_0.9
+ONT	60	15000	500-70005	90%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_60x_0.9
+ONT	10	15000	500-70006	99%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_10x_0.99
+ONT	20	15000	500-70007	99%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_20x_0.99
+ONT	30	15000	500-70008	99%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_30x_0.99
+ONT	40	15000	500-70009	99%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_40x_0.99
+ONT	50	15000	500-70010	99%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_50x_0.99
+ONT	60	15000	500-70011	99%	/home/jenyuw/Software/Sim-it-Sim-it1.3.4/error_profile_ONT.txt	ONT_60x_0.99
