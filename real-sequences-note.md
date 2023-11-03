@@ -1,5 +1,12 @@
 # All Iso-1 
-
+SRR22822929 ont-ligation
+SRR22822930 ont-ligation
+SRR23215007 ont-ligation
+SRR23215008 ont-ligation
+SRR23215010 ont-ligation
+SRR23215009 ont-ligation
+SRR11906526 pb-rs2
+SRR11906525 pb-sequel
 # SRR22822929
 =SRX18782374
 Q20
