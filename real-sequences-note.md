@@ -7,6 +7,12 @@ SRR23215010 ont-ligation
 SRR23215009 ont-ligation
 SRR11906526 pb-rs2
 SRR11906525 pb-sequel
+iso1_hifi.fastq.gz  pb-hifi
+iso1-R1041_ONT.fastq.gz ont-ligation
+iso1-R941-2_ONT.fastq.gz    ont-ligation
+iso1-R941_ONT.fastq.gz  ont-ligation
+A4_hifi_099.min6k.fasta.gz  pb-hifi
+
 # SRR22822929
 =SRX18782374
 Q20
