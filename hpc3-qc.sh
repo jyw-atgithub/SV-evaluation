@@ -11,6 +11,10 @@ source ~/.bashrc
 #/data/homezvol2/jenyuw/.conda/envs/longqc/bin
 #/pub/jenyuw/Software/LongQC
 lqc="/pub/jenyuw/Software/LongQC-1.2.0c"
+#This version of longqc finally works
+# compiled minimap2-coverage with gcc module, executed by python3.8 module
+# Using Conda versionof Longqc  on HPC3 kept failing
+
 raw=/pub/jenyuw/Eval-sv-temp/raw
 trimmed=/pub/jenyuw/Eval-sv-temp/results/trimmed
 qc_report="/pub/jenyuw/Eval-sv-temp/results/qc_report"
