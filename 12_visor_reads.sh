@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 #SBATCH --job-name=reads
 #SBATCH -A jje_lab
