@@ -24,17 +24,18 @@ read_type=`echo ${name} | cut -d '_' -f 1 `
 
 ## try "assembly" as query and minimap2 "asm5" preset. 
 #The F1 score of nanopore2018_100_1 is 0.9604690117252932 with much fewer false positive
+file=${assemble}/${name}_flye/assembly.fasta
 
 minimap2 -t ${nT} -a -x asm5 --cs -r2k \
 ${ref_genome} ${file} |\
-samtools view -b -h -@ ${nT} -o -|samtools sort -@ ${nT} -o ${aligned_bam}/${name}.flye-ref-asm5.sort.bam
-samtools index ${aligned_bam}/${name}.flye-ref-asm5.sort.bam
+samtools view -b -h -@ ${nT} -o -|samtools sort -@ ${nT} -o ${aligned_bam}/${name}.flye-ref.sort.bam
+samtools index ${aligned_bam}/${name}.flye-ref.sort.bam
 
 conda activate sv-calling
 svim-asm haploid --sample ${name}_svimASM --min_sv_size 50 \
-${SVs}/${name}_svimASM-asm5 ${aligned_bam}/${name}.flye-ref-asm5.sort.bam ${ref_genome}
+${SVs}/${name}_svimASM ${aligned_bam}/${name}.flye-ref.sort.bam ${ref_genome}
 
-cp ${SVs}/${name}_svimASM-asm5/variants.vcf ${SVs}/${name}.svimASM-asm5.vcf
+cp ${SVs}/${name}_svimASM/variants.vcf ${SVs}/${name}.svimASM.vcf
 conda deactivate
 
 

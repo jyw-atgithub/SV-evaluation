@@ -29,7 +29,7 @@ truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_100_1.cutesv.vcf.gz -
 
 truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_100_1.sniffles.vcf.gz -o ${bench}/nanopore2018_100_1.sniffles \
 --pctseq 0 --sizemax 10000000
-#######--------------########
+#######################################################
 bcftools sort ${SVs}/nanopore2018_100_1.svimASM-asm.vcf |bgzip -@ 4 -c > ${SVs}/nanopore2018_100_1.svimASM-asm.vcf.gz
 bcftools index -t ${SVs}/nanopore2018_100_1.svimASM-asm.vcf.gz
 
@@ -47,4 +47,12 @@ truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_100_1.svimASM-asm5.vc
 --pctseq 0 --sizemax 10000000
 
 truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_100_1.svimASM-scfd.vcf.gz -o ${bench}/nanopore2018_100_1.svimASM-scfd \
+--pctseq 0 --sizemax 10000000
+
+########################################################
+
+truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_10_1.mumco-asm.good.sort.vcf.gz -o ${bench}/nanopore2018_10_1.mumco-asm \
+--pctseq 0 --sizemax 10000000
+
+truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_10_1.mumco-scfd.good.sort.vcf.gz -o ${bench}/nanopore2018_10_1.mumco-scfd \
 --pctseq 0 --sizemax 10000000
