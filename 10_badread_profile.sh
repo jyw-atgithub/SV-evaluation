@@ -14,4 +14,3 @@ nT=$SLURM_CPUS_PER_TASK
 module load python/3.8.0
 
 module unload python/3.8.0
-

@@ -32,5 +32,6 @@ echo "The mapping option is ${mapping_option[$read_type]}"
 
 minimap2 -t ${nT} -a -x ${mapping_option[$read_type]} ${ref_genome} ${file} |\
 samtools view -b -h -@ ${nT} |\
-samtools sort -m 2G -@ ${nT} --write-index -o ${aligned_bam}/${name}.trimmed-ref.sort.bam
-#samtools index -@ ${nT} ${aligned_bam}/${name}.trimmed-ref.sort.bam
+samtools sort -m 2G -@ ${nT} -o ${aligned_bam}/${name}.trimmed-ref.sort.bam
+# do not use --write-indes. because it produces .csi not .bai
+samtools index -@ ${nT} ${aligned_bam}/${name}.trimmed-ref.sort.bam
