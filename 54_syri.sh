@@ -1,5 +1,8 @@
 #! /bin/bash
 
+#########NOT WORKING WELL###############
+
+
 #SBATCH --job-name=syri
 #SBATCH -A jje_lab
 #SBATCH -p standard
@@ -29,15 +32,27 @@ file=${assemble}/${name}_flye/assembly.fasta
 mkdir ${SVs}/${name}_SYRI
 cd ${SVs}/${name}_SYRI
 
-#reuse the alignment for SVIM-asm
-samtools view -@ 2 -h ${aligned_bam}/${name}.flye-ref.sort.bam |\
-sed s/_RagTag//g |\
-samtools view -@ 2 -h --bam -o ${SVs}/${name}_SYRI/${name}.final-ref.sort.bam
+: <<'SKIP'
+minimap2 -t ${nT} -a -x asm5 --eqx \
+${ref_genome} ${file} |\
+samtools view -h -@ ${nT} -O SAM |samtools sort -O SAM -@ ${nT} |\
+samtools view -@ ${nT} -h --bam -o ${SVs}/${name}_SYRI/${name}.final-ref.sort.bam
 
-cp ${ref_genome} ${SVs}/${name}_SYRI/r649.ref.fasta
-cat ${file}|sed s/_RagTag//g > ${SVs}/${name}_SYRI/${name}.scaffold.fasta
+cp ${file} ${SVs}/${name}_SYRI/${name}.scaffold.fasta
+SKIP
 
 module load python/3.10.2
+ragtag.py scaffold -r -w --aligner 'minimap2' -t ${nT} \
+-o ${SVs}/${name}_SYRI/ragtag_out ${ref_genome} ${file}
+
+cat ${SVs}/${name}_SYRI/ragtag_out/ragtag.scaffold.fasta|sed 's/_RagTag//g' > ${SVs}/${name}_SYRI/${name}.scaffold.fasta
+
+minimap2 -t ${nT} -a -x asm5 --eqx \
+${ref_genome} ${SVs}/${name}_SYRI/${name}.scaffold.fasta |\
+samtools view -h -@ ${nT} -O SAM |samtools sort -O SAM -@ ${nT} |\
+samtools view -@ ${nT} -h --bam -o ${SVs}/${name}_SYRI/${name}.final-ref.sort.bam
+
+cp ${ref_genome} ${SVs}/${name}_SYRI/r649.ref.fasta
 
 fixchr -c ${SVs}/${name}_SYRI/${name}.final-ref.sort.bam -F B \
 -r ${SVs}/${name}_SYRI/r649.ref.fasta -q ${SVs}/${name}_SYRI/${name}.scaffold.fasta \
@@ -47,8 +62,8 @@ cat ${SVs}/${name}_SYRI/ref.filtered.fa| sed s/'>4'/'>chr4'/g > ${SVs}/${name}_S
 cat ${SVs}/${name}_SYRI/qry.filtered.fa| sed s/'>4'/'>chr4'/g > ${SVs}/${name}_SYRI/qry.filtered.rn.fa
 
 minimap2 -t ${nT} -a -x asm5 --cs --eqx \
-${SVs}/${name}_SYRI/ref.filtered.rn.fa  ${SVs}/${name}_SYRI/qry.filtered.rn.fa \
-|samtools view -b -h -@ ${nT} -o -|samtools sort -@ ${nT} -o ${SVs}/${name}_SYRI/sort.bam
+${SVs}/${name}_SYRI/ref.filtered.rn.fa  ${SVs}/${name}_SYRI/qry.filtered.rn.fa |\
+samtools view -b -h -@ ${nT} -o -|samtools sort -@ ${nT} -o ${SVs}/${name}_SYRI/sort.bam
 samtools index ${SVs}/${name}_SYRI/sort.bam
 
 syri -F B -c ${SVs}/${name}_SYRI/sort.bam -r ${SVs}/${name}_SYRI/ref.filtered.rn.fa \

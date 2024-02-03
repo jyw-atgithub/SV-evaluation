@@ -6,7 +6,7 @@
 #SBATCH --array=1
 #SBATCH --cpus-per-task=20
 #SBATCH --mem-per-cpu=6G
-#SBATCH --constraint=fastscratch  ###MUST use fast scratch for mum&co!!
+#SBATCH --constraint=fastscratch
 
 ref="/dfs7/jje/jenyuw/Eval-sv-temp/reference"
 ref_genome="${ref}/r649.rename.fasta" ##REMENBER it is renamed
@@ -23,14 +23,14 @@ file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 8 |cut -d '.' -f 1 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
 
-#the input is the assembly
-file=${assemble}/${name}_flye/assembly.fasta
+#the input is the scaffold
+file=${scaffold}/${name}/ragtag.scaffold.fasta
 
 mkdir ${SVs}/${name}_svmu
 nucmer --threads ${nT} --delta=${SVs}/${name}_svmu/${name}.delta ${ref_genome} ${file}
-conda activate sv-calling
-lastz ${ref_genome}[multiple] ${file}[multiple] --chain --format=general:name1,strand1,start1,end1,name2,strand2,start2,end2 > ${SVs}/${name}_svmu/${name}.lastz.txt
-conda deactivate
+#conda activate sv-calling
+#lastz ${ref_genome}[multiple] ${file}[multiple] --chain --format=general:name1,strand1,start1,end1,name2,strand2,start2,end2 > ${SVs}/${name}_svmu/${name}.lastz.txt
+#conda deactivate
 
 cd ${SVs}/${name}_svmu
 svmu ${SVs}/${name}_svmu/${name}.delta ${ref_genome} ${file} l ${SVs}/${name}_svmu/${name}.lastz.txt ${name}
@@ -77,33 +77,37 @@ printf "" >${sample_name}.body.txt
 #($4 != "nCNV-R")&& ($4 != "CNV-R") Do not involve the nCNV-R and CNV-R (in the reference)
 #&& (NR > 1) skip the header
 #&& ($9 > 50) SVLEN longer than 50bp
+
+##backup:cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 30000000) {print $0}'
+
 #INS as INS
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 10000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
 gawk ' $4=="INS" {print $1 "\t"  $2 "\t" "INS_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=INS;SVLEN=" $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 #DEL as DEL
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 10000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
 gawk ' $4=="DEL" {print $1 "\t"  $2 "\t" "DEL_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=DEL;SVLEN=" 0 - $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 #CNV-Q as DUP #nCNV-Q aslo as DUP
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 10000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
 gawk ' ( ($4=="CNV-Q") || ($4=="nCNV-Q") ) && ($9 > 0) && ( $7 > $6 ) {print $1 "\t"  $2 "\t" "DUP_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=DUP;SVLEN=" $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"} ' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 ##some CNV contains end < start, so we need to switch the start and end ";Q_START=" $7 ";Q_END=" $6
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 10000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
 gawk ' ( ($4=="CNV-Q") || ($4=="nCNV-Q") ) && ($9 > 0) && ( $6 > $7 ) {print $1 "\t"  $2 "\t" "DUP_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=DUP;SVLEN=" $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $7 ";Q_END=" $6 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 ##The length of INV were noted ad both Positive and NEgative !!
 ## only keep the INV with positive length
 #INV as INV
 ## The Reference END of inversions are Wrong!! It should be the start + length!! $3 + $9
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 10000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
 gawk ' ($4=="INV") && ($9 > 0) && ($7 >$6) {print $1 "\t"  $2 "\t" "INV_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=INV;SVLEN=" $9 ";END=" $3 + $9 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 ##Some inversions have end < start, so we need to switch!! ";Q_START=" $7 ";Q_END=" $6
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 10000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
 gawk ' ($4=="INV") && ($9 > 0) && ($6 >$7) {print $1 "\t"  $2 "\t" "INV_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=INV;SVLEN=" $9 ";END=" $3 + $9 ";Q_CHROM=" $5 ";Q_START=" $7 ";Q_END=" $6 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 
 
 
 printf "" >  ${SVs}/${name}_svmu/${sample_name}.good.body.txt
 counter=0
-cat ${SVs}/${name}_svmu/${sample_name}.body.txt|while read line
+#make the negative SVLEN into positive
+cat ${SVs}/${name}_svmu/${sample_name}.body.txt|sed s/"SVLEN=-"/"SVLEN="/g|while read line
 do
     svtype=`echo $line|gawk '{print $3}'|gawk -F "_" '{print $1}'`
     ref_chrom=`echo $line|gawk '{print $1}'`
@@ -130,7 +134,6 @@ do
         done
         line=`echo ${line}|sed s@"REF_seq"@@`
     #fi
-    
     echo -e "${q_chrom}\t${q_start}\t$((q_end + 1))">${SVs}/${name}_svmu/temp.2.bed
     real_q_seq=`bedtools getfasta -fi ${query_genome} -bed ${SVs}/${name}_svmu/temp.2.bed 2>>err.2.txt |gawk '{if (NR==2) print $1}'`
     #if [[ ${#real_q_seq} > 0 ]]
@@ -166,3 +169,6 @@ cat ${SVs}/${name}_svmu/${sample_name}.header.txt ${SVs}/${name}_svmu/${sample_n
 bcftools view --with-header --threads ${nT} ${SVs}/${name}_svmu/${sample_name}.vcf |\
 bcftools sort --max-mem 2G -O z -o ${SVs}/${name}_svmu/${sample_name}.vcf.gz
 bcftools index -f -t ${SVs}/${name}_svmu/${sample_name}.vcf.gz
+
+cp ${SVs}/${name}_svmu/${sample_name}.vcf.gz ${SVs}/${name}.svmu.vcf.gz
+cp ${SVs}/${name}_svmu/${sample_name}.vcf.gz.tbi ${SVs}/${name}.svmu.vcf.gz.tbi

@@ -56,3 +56,11 @@ truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_10_1.mumco-asm.good.s
 
 truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_10_1.mumco-scfd.good.sort.vcf.gz -o ${bench}/nanopore2018_10_1.mumco-scfd \
 --pctseq 0 --sizemax 10000000
+
+truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_100_1.mumco.good.sort.vcf.gz -o ${bench}/nanopore2018_100_1.mumco \
+--pctseq 0 --sizemax 10000000
+
+########################################################
+
+truvari bench -b ${sim}/base.vcf.gz -c ${SVs}/nanopore2018_100_1.svmu.vcf.gz -o ${bench}/nanopore2018_100_1.svmu \
+--pctseq 0 --sizemax 10000000
