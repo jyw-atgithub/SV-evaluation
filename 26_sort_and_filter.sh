@@ -13,6 +13,7 @@ sim="/dfs7/jje/jenyuw/Eval-sv-temp/simulation"
 bench="/dfs7/jje/jenyuw/Eval-sv-temp/results/benchmark"
 SVs="/dfs7/jje/jenyuw/Eval-sv-temp/results/SVs"
 trimmed="/dfs7/jje/jenyuw/Eval-sv-temp/results/trimmed"
+nT=$SLURM_CPUS_PER_TASK
 
 source ~/.bashrc
 

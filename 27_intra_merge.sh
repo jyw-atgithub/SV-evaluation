@@ -15,6 +15,7 @@ SVs="/dfs7/jje/jenyuw/Eval-sv-temp/results/SVs"
 trimmed="/dfs7/jje/jenyuw/Eval-sv-temp/results/trimmed"
 con_SVs="/dfs7/jje/jenyuw/Eval-sv-temp/results/consensus_SVs"
 
+nT=$SLURM_CPUS_PER_TASK
 source ~/.bashrc
 
 file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
@@ -59,7 +60,7 @@ truvari collapse --intra -k maxqual --sizemax 200000000 --sizemin 50 \
 bcftools sort -m 2G |bgzip -@ ${nT} > ${con_SVs}/${name}.tru.${prog1}_${prog2}.sort.vcf.gz
 bcftools index -f -t ${con_SVs}/${name}.tru.${prog1}_${prog2}.sort.vcf.gz
 
-
+##Three callers
 bcftools merge -m none ${SVs}/${name}.{cutesv,sniffles,SVIM}.filtered.vcf.gz |\
 bcftools sort -m 2G -O z -o ${con_SVs}/${name}.3.vcf.gz
 bcftools index -f -t ${con_SVs}/${name}.3.vcf.gz
