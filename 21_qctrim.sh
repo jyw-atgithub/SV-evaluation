@@ -19,10 +19,11 @@ nT=$SLURM_CPUS_PER_TASK
 
 if [[ $SLURM_ARRAY_TASK_ID == 1 ]]
 then
-ls ${sim}/{nanopore2018,nanopore2020,nanopore2023,pacbio2016}_*_1/r.fq.gz >${sim}/namelist_1.txt
+ls ${sim}/{nanopore2018,nanopore2020,nanopore2023,pacbio2016}_*_2/r.fq.gz >${sim}/namelist_2.txt
 fi
 
-file=`head -n $SLURM_ARRAY_TASK_ID ${sim}/namelist_1.txt |tail -n 1`
+#remember to change the name of filelist!!
+file=`head -n $SLURM_ARRAY_TASK_ID ${sim}/namelist_2.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 7 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
 coverage=`echo ${name} | cut -d '_' -f 2 `

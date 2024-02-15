@@ -18,10 +18,10 @@ nT=$SLURM_CPUS_PER_TASK
 
 if [[ $SLURM_ARRAY_TASK_ID == 1 ]]
 then
-ls ${trimmed}/*.trimmed.fastq.gz >${trimmed}/namelist_1.txt
+ls ${trimmed}/*.trimmed.fastq.gz >${trimmed}/namelist_2.txt
 fi
 
-file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
+file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_2.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 8 |cut -d '.' -f 1 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
 

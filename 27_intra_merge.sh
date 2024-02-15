@@ -18,7 +18,7 @@ con_SVs="/dfs7/jje/jenyuw/Eval-sv-temp/results/consensus_SVs"
 nT=$SLURM_CPUS_PER_TASK
 source ~/.bashrc
 
-file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
+file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_2.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 8 |cut -d '.' -f 1 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
 
@@ -31,6 +31,7 @@ bcftools sort -m 2G -O z -o ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 bcftools index -f -t ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 
 truvari collapse --intra -k maxqual --sizemax 200000000 --sizemin 50 \
+--refdist 600 --pctseq 0.7 --pctsize 0.7 --pctovl 0 \
 -i ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz \
 -c ${con_SVs}/collapsed_${name}.${prog1}_${prog2}.vcf.gz |\
 bcftools sort -m 2G |bgzip -@ ${nT} > ${con_SVs}/${name}.tru.${prog1}_${prog2}.sort.vcf.gz
@@ -43,6 +44,7 @@ bcftools sort -m 2G -O z -o ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 bcftools index -f -t ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 
 truvari collapse --intra -k maxqual --sizemax 200000000 --sizemin 50 \
+--refdist 600 --pctseq 0.7 --pctsize 0.7 --pctovl 0 \
 -i ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz \
 -c ${con_SVs}/collapsed_${name}.${prog1}_${prog2}.vcf.gz |\
 bcftools sort -m 2G |bgzip -@ ${nT} > ${con_SVs}/${name}.tru.${prog1}_${prog2}.sort.vcf.gz
@@ -55,6 +57,7 @@ bcftools sort -m 2G -O z -o ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 bcftools index -f -t ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 
 truvari collapse --intra -k maxqual --sizemax 200000000 --sizemin 50 \
+--refdist 600 --pctseq 0.7 --pctsize 0.7 --pctovl 0 \
 -i ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz \
 -c ${con_SVs}/collapsed_${name}.${prog1}_${prog2}.vcf.gz |\
 bcftools sort -m 2G |bgzip -@ ${nT} > ${con_SVs}/${name}.tru.${prog1}_${prog2}.sort.vcf.gz
@@ -66,6 +69,7 @@ bcftools sort -m 2G -O z -o ${con_SVs}/${name}.3.vcf.gz
 bcftools index -f -t ${con_SVs}/${name}.3.vcf.gz
 
 truvari collapse --intra -k maxqual --sizemax 200000000 --sizemin 50 \
+--refdist 600 --pctseq 0.7 --pctsize 0.7 --pctovl 0 \
 -i ${con_SVs}/${name}.3.vcf.gz \
 -c ${con_SVs}/collapsed_${name}.3.vcf.gz |\
 bcftools sort -m 2G |bgzip -@ ${nT} > ${con_SVs}/${name}.tru.3.sort.vcf.gz

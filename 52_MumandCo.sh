@@ -3,7 +3,7 @@
 #SBATCH --job-name='mum&co'
 #SBATCH -A jje_lab
 #SBATCH -p standard
-#SBATCH --array=1
+#SBATCH --array=1-40
 #SBATCH --cpus-per-task=20
 #SBATCH --mem-per-cpu=6G
 #SBATCH --constraint=fastscratch  ###MUST use fast scratch for mum&co!!
@@ -19,7 +19,7 @@ scaffold="/dfs7/jje/jenyuw/Eval-sv-temp/results/scaffold"
 nT=$SLURM_CPUS_PER_TASK
 source ~/.bashrc
 
-file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
+file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_2.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 8 |cut -d '.' -f 1 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
 
@@ -76,6 +76,5 @@ cat ${SVs}/${name}_mumco_output/header.pre ${SVs}/${name}_mumco_output/container
 bgzip -@ ${nT} -f -k ${SVs}/${name}_mumco_output/${name}_mumco.good.vcf
 bcftools sort -O z ${SVs}/${name}_mumco_output/${name}_mumco.good.vcf.gz >${SVs}/${name}.mumco.good.sort.vcf.gz
 bcftools index -t -f ${SVs}/${name}.mumco.good.sort.vcf.gz
-
 
 echo "This is the end!!"

@@ -13,7 +13,7 @@ assemble="/dfs7/jje/jenyuw/Eval-sv-temp/results/assemble"
 nT=$SLURM_CPUS_PER_TASK
 source ~/.bashrc
 
-file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
+file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_2.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 8 |cut -d '.' -f 1 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
 

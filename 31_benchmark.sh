@@ -15,9 +15,11 @@ trimmed="/dfs7/jje/jenyuw/Eval-sv-temp/results/trimmed"
 con_SVs="/dfs7/jje/jenyuw/Eval-sv-temp/results/consensus_SVs"
 source ~/.bashrc
 
-file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
+file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_2.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 8 |cut -d '.' -f 1 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
+
+module load python/3.10.2
 
 #create the vcf for simulated true set. Only once
 #python3 convertvcf.py ${ref_genome} ${sim}/HACk.random.bed ${sim}/HACk.random.vcf
@@ -90,3 +92,5 @@ prog2=svimASM
 bcftools index -f -t ${con_SVs}/${name}.tru.${prog1}_${prog2}.sort.vcf.gz
 truvari bench -b ${sim}/base.vcf.gz -c ${con_SVs}/${name}.tru.${prog1}_${prog2}.sort.vcf.gz -o ${bench}/${name}.${prog1}_${prog2} \
 --pctseq 0 --sizemax 10000000
+
+module unload python/3.10.2

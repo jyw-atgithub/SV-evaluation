@@ -25,6 +25,5 @@ cut -f1,2 ${sim}/hap_1/h1.fa.fai ${ref}/r649.rename.fasta.fai > ${sim}/haplochro
 cat ${sim}/haplochroms.dim.tsv | sort|\
 gawk '$2 > maxvals[$1] {lines[$1]=$0; maxvals[$1]=$2} END { for (tag in lines) print lines[tag] }' > ${sim}/maxdims.tsv
 
-#coverage fluctuations (capture bias) value is the 4th column; purity value is the 5th column (100.0 means no contamination)
-#in awk: int() returns integer; rand() returns random number between 0 and 1; int(rand()*11)+90 returns 9 to 100
-awk 'OFS=FS="\t"''{print $1, "1", $2, "100.0", "100.0"}' ${sim}/maxdims.tsv > reads.simple.bed
+module unload R/4.2.2
+module unload python/3.8.0
