@@ -25,7 +25,7 @@ read_type=`echo ${name} | cut -d '_' -f 1 `
 bgzip -f --keep -@ ${nT} ${SVs}/${name}.svimASM.vcf
 bcftools sort --write-index --max-mem 4G -O z -o ${SVs}/${name}.svimASM.sort.vcf.gz ${SVs}/${name}.svimASM.vcf.gz
 
-for i in ${SVs}/${name}.svimASM.sort.vcf.gz ${SVs}/${name}.mumco.good.sort.vcf.gz #${SVs}/${name}.svmu.vcf.gz
+for i in ${SVs}/${name}.svimASM.sort.vcf.gz ${SVs}/${name}.mumco.good.sort.vcf.gz ${SVs}/${name}.svmu.vcf.gz
 do
 #bgzip -f --keep -@ ${nT} ${i}
 #bcftools sort --write-index --max-mem 4G -O z -o ${i}.sort.gz ${i}.gz

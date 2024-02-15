@@ -4,7 +4,7 @@
 #SBATCH -A jje_lab
 #SBATCH -p standard
 #SBATCH --array=1
-#SBATCH --cpus-per-task=20
+#SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=6G
 #SBATCH --constraint=fastscratch
 
@@ -19,7 +19,7 @@ scaffold="/dfs7/jje/jenyuw/Eval-sv-temp/results/scaffold"
 nT=$SLURM_CPUS_PER_TASK
 source ~/.bashrc
 
-file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_1.txt |tail -n 1`
+file=`head -n $SLURM_ARRAY_TASK_ID ${trimmed}/namelist_2.txt |tail -n 1`
 name=`echo ${file} | cut -d '/' -f 8 |cut -d '.' -f 1 `
 read_type=`echo ${name} | cut -d '_' -f 1 `
 
@@ -81,25 +81,25 @@ printf "" >${sample_name}.body.txt
 ##backup:cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 > 50) && ($9 < 30000000) {print $0}'
 
 #INS as INS
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 20000000) {print $0}'|\
 gawk ' $4=="INS" {print $1 "\t"  $2 "\t" "INS_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=INS;SVLEN=" $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 #DEL as DEL
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 20000000) {print $0}'|\
 gawk ' $4=="DEL" {print $1 "\t"  $2 "\t" "DEL_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=DEL;SVLEN=" 0 - $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 #CNV-Q as DUP #nCNV-Q aslo as DUP
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 20000000) {print $0}'|\
 gawk ' ( ($4=="CNV-Q") || ($4=="nCNV-Q") ) && ($9 > 0) && ( $7 > $6 ) {print $1 "\t"  $2 "\t" "DUP_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=DUP;SVLEN=" $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"} ' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 ##some CNV contains end < start, so we need to switch the start and end ";Q_START=" $7 ";Q_END=" $6
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 20000000) {print $0}'|\
 gawk ' ( ($4=="CNV-Q") || ($4=="nCNV-Q") ) && ($9 > 0) && ( $6 > $7 ) {print $1 "\t"  $2 "\t" "DUP_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=DUP;SVLEN=" $9 ";END=" $3 ";Q_CHROM=" $5 ";Q_START=" $7 ";Q_END=" $6 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 ##The length of INV were noted ad both Positive and NEgative !!
 ## only keep the INV with positive length
 #INV as INV
 ## The Reference END of inversions are Wrong!! It should be the start + length!! $3 + $9
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 20000000) {print $0}'|\
 gawk ' ($4=="INV") && ($9 > 0) && ($7 >$6) {print $1 "\t"  $2 "\t" "INV_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=INV;SVLEN=" $9 ";END=" $3 + $9 ";Q_CHROM=" $5 ";Q_START=" $6 ";Q_END=" $7 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 ##Some inversions have end < start, so we need to switch!! ";Q_START=" $7 ";Q_END=" $6
-cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 30000000) {print $0}'|\
+cat filtered_temp.txt| gawk ' ($4 != "nCNV-R") && ($4 != "CNV-R") && (NR > 1) && ($9 < 20000000) {print $0}'|\
 gawk ' ($4=="INV") && ($9 > 0) && ($6 >$7) {print $1 "\t"  $2 "\t" "INV_" $8 "\t" "REF_seq" "\t" "ALT_seq" "\t" "30" "\t" "PASS" "\t" "SVTYPE=INV;SVLEN=" $9 ";END=" $3 + $9 ";Q_CHROM=" $5 ";Q_START=" $7 ";Q_END=" $6 "\t" "GT" "\t" "1/1"}' >>${SVs}/${name}_svmu/${sample_name}.body.txt
 
 
