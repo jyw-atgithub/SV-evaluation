@@ -25,10 +25,9 @@ read_type=`echo ${name} | cut -d '_' -f 1 `
 bgzip -f --keep -@ ${nT} ${SVs}/${name}.svimASM.vcf
 bcftools sort --write-index --max-mem 4G -O z -o ${SVs}/${name}.svimASM.sort.vcf.gz ${SVs}/${name}.svimASM.vcf.gz
 
+#remove the unknown segments with poly-N
 for i in ${SVs}/${name}.svimASM.sort.vcf.gz ${SVs}/${name}.mumco.good.sort.vcf.gz ${SVs}/${name}.svmu.vcf.gz
 do
-#bgzip -f --keep -@ ${nT} ${i}
-#bcftools sort --write-index --max-mem 4G -O z -o ${i}.sort.gz ${i}.gz
 prog=`basename ${i} | gawk -F "." '{print $2}'`
 bcftools view --threads ${nT} -r 2L,2R,3L,3R,4,X,Y -i 'FILTER = "PASS"' -O v -o - ${i} |\
 bcftools sort --max-mem 4G -O v |\
@@ -37,7 +36,6 @@ sed 's/ .       PASS/   30      PASS/g' |\
 grep -v "NNNNNNNNNNNNNNNNNNNN" |bgzip -@ ${nT} -c > ${SVs}/${name}.${prog}.filtered.vcf.gz
 done
 
-###########TO DO: try to remove homopolymers or multiple "N" in the mumco vcf###########
 ##We only want the DUP and INS from mumco
 ##Change the quality score of mumco vcf. Better quality for duplication
 mv ${SVs}/${name}.mumco.filtered.vcf.gz ${SVs}/${name}.mumco.filtered.ori.vcf.gz
@@ -52,5 +50,5 @@ grep -v "NNNNNNNNNNNNNNNNNNNN" |\
 bgzip -@ ${nT} -c > ${SVs}/${name}.mumco.filtered.vcf.gz.body
 cat ${SVs}/${name}.mumco.filtered.vcf.gz.header ${SVs}/${name}.mumco.filtered.vcf.gz.body > ${SVs}/${name}.mumco.filtered.vcf.gz
 rm ${SVs}/${name}.mumco.filtered.vcf.gz.header ${SVs}/${name}.mumco.filtered.vcf.gz.body
-#rm ${name}.*.csi
+#rm ${SVs}/${name}.*.csi
 echo "This is the end!"

@@ -6,6 +6,8 @@
 #SBATCH --array=1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem-per-cpu=10G
+#SBATCH --tmp=100G                ## requesting 100 GB local scratch
+#SBATCH --constraint=fastscratch  ## requesting nodes with fast scratch in /tmp
 
 ref="/dfs7/jje/jenyuw/Eval-sv-temp/reference"
 ref_genome="${ref}/r649.rename.fasta" ##REMENBER it is renamed
@@ -33,6 +35,7 @@ bcftools merge -m none ${SVs}/${name}.{${prog1},${prog2}}.filtered.vcf.gz |\
 bcftools sort -m 4G -O z -o ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 bcftools index -f -t ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz
 
+##Do not use "-f" in truvari collapse, because this is an old function and less accurate
 truvari collapse --intra -k maxqual --sizemax 5000000 --sizemin 50 --refdist 600 --pctseq 0.8 --pctsize 0.8 \
 -i ${con_SVs}/${name}.${prog1}_${prog2}.vcf.gz \
 -c ${con_SVs}/collapsed_${name}.${prog1}_${prog2}.vcf.gz |\
