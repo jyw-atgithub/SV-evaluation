@@ -20,7 +20,7 @@ ls ${raw}/iso1_{R1041,R941,hifi}.fastq.gz ${raw}/SRR228229{29,30}_R1041.fastq.gz
 ls ${raw}/SRR11906525_Sequel.fastq.gz ${raw}/SRR11906526_RSII.fastq.gz >>${raw}/namelist.txt
 fi
 
-if [[ $SLURM_ARRAY_TASK_ID -le 8 ]]
+if [[ $SLURM_ARRAY_TASK_ID -le 7 ]]
 then
 file=`head -n $SLURM_ARRAY_TASK_ID ${raw}/namelist.txt |tail -n 1`
 strain=`echo ${file} | cut -d '/' -f 7 | cut -d '_' -f 1`
@@ -35,9 +35,8 @@ flye --threads ${nT} --genome-size 135m ${preset_option[$read_type]} ${file} --o
 fi
 #porechop_abi is not required because the adapters seem to be already removed.
 
-##Chopper is not working right now. 
+##Chopper is works on fastQ but not fastA
 #module load anaconda/2022.05
-#. ~/.mycondainit-2022.05
 #conda activate qc
 
 #zcat ${file} |chopper -l 560 --headcrop 30 --tailcrop 30 |\

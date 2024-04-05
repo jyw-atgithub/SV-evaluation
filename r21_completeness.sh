@@ -13,9 +13,9 @@ compleasm="/dfs7/jje/jenyuw/Eval-sv-temp/results/compleasm"
 compleasm_kit="/pub/jenyuw/Software/compleasm_kit"
 source ~/.bashrc
 nT=$SLURM_CPUS_PER_TASK
-#newgrp jje
 
 module load anaconda/2022.05
+#newgrp jje
 conda activate BUSCO
 
 echo -e "iso1_R941_flye
@@ -28,7 +28,9 @@ SRR11906525_Sequel_flye
 iso1_hifi_hifiasm-4
 iso1_hifi_hifiasm-3
 iso1_hifi_hifiasm-2
-iso1_hifi_hifiasm-1" >${assemble}/iso1.list.txt
+iso1_hifi_hifiasm-1
+iso1_R1041_flye-many
+iso1_hifi_hifiasm-5" >${assemble}/iso1.list.txt
 
 item=`head -n $SLURM_ARRAY_TASK_ID ${assemble}/iso1.list.txt |tail -n 1`
 read_type=`echo ${item} |  cut -d '_' -f 2`
@@ -36,19 +38,19 @@ assembler=`echo ${item} |  cut -d '_' -f 3`
 
 #awk '/^S/{print ">"$2;print $3}' *.p_ctg.gfa > assembly.fasta
 
-busco -f -i ${assemble}}/${item}/assembly.fasta \
+busco -f -i ${assemble}/${item}/assembly.fasta \
 --out_path ${busco} \
 -o iso1_${read_type}_${assembler} \
 -l diptera_odb10 -m genome -c ${nT}
 
 conda deactivate
-moduel unload anaconda/2022.05
+module unload anaconda/2022.05
 
 module load python/3.10.2
 #python3 ${compleasm_kit}/compleasm.py list --remote
 #python3 ${compleasm_kit}/compleasm.py download diptera_odb10 -L ${compleasm_kit}/diptera_odb10
 
-python ${compleasm_kit}/compleasm.py run -a ${assemble}}/${item}/assembly.fasta \
+python ${compleasm_kit}/compleasm.py run -a ${assemble}/${item}/assembly.fasta \
 -o ${compleasm}/iso1_${read_type}_${assembler} \
 -t ${nT} -l diptera_odb10 -L ${compleasm_kit}/diptera_odb10
-moduel unload python/3.10.2
+module unload python/3.10.2
