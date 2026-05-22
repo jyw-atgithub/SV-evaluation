@@ -37,7 +37,7 @@ read_type=`echo ${item} |  cut -d '_' -f 2`
 assembler=`echo ${item} |  cut -d '_' -f 3`
 
 #awk '/^S/{print ">"$2;print $3}' *.p_ctg.gfa > assembly.fasta
-
+busco --version
 busco -f -i ${assemble}/${item}/assembly.fasta \
 --out_path ${busco} \
 -o iso1_${read_type}_${assembler} \
@@ -52,5 +52,17 @@ module load python/3.10.2
 
 python ${compleasm_kit}/compleasm.py run -a ${assemble}/${item}/assembly.fasta \
 -o ${compleasm}/iso1_${read_type}_${assembler} \
+-t ${nT} -l diptera_odb10 -L ${compleasm_kit}/diptera_odb10
+module unload python/3.10.2
+
+busco -f -i first.fasta.k24.w250.z1000.ntLink.gap_fill.3rounds.fa \
+--out_path . \
+-o ntLink-571 \
+-l diptera_odb10 -m genome -c ${nT}
+
+
+module load python/3.10.2
+python ${compleasm_kit}/compleasm.py run -a first.fasta.k24.w250.z1000.ntLink.gap_fill.3rounds.fa \
+-o ntLink_compleasm \
 -t ${nT} -l diptera_odb10 -L ${compleasm_kit}/diptera_odb10
 module unload python/3.10.2
